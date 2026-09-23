@@ -1,41 +1,134 @@
-# CryptoCabana - TryHackMe Walkthrough
+# ☁️ CryptoCabana — Azure Cloud Security Walkthrough (TryHackMe)
 
-> Professional cloud-security documentation for the **TryHackMe CryptoCabana** room.
+<div align="center">
+
+# 🌴 CryptoCabana
+
+### *Breaking Trust Chains in Azure Cloud Infrastructure*
+
+[![TryHackMe](https://img.shields.io/badge/TryHackMe-Hacker%20Holidays-red?style=for-the-badge\&logo=tryhackme)](https://tryhackme.com/)
+[![Azure](https://img.shields.io/badge/Microsoft-Azure-0078D4?style=for-the-badge\&logo=microsoftazure\&logoColor=white)](https://azure.microsoft.com/)
+[![Cloud Security](https://img.shields.io/badge/Cloud-Security-0ea5e9?style=for-the-badge\&logo=icloud)](#)
+[![Difficulty](https://img.shields.io/badge/Difficulty-Medium-orange?style=for-the-badge)](#)
+
+*A professional cloud penetration testing walkthrough demonstrating Azure Storage exploitation, identity abuse, Key Vault reconnaissance, RBAC analysis, and cloud trust-chain compromise.*
+
+**Author:** Anurag Revankar
+
+</div>
+
+---
+
+## 📖 About This Repository
+
+**CryptoCabana** is a cloud-focused **TryHackMe Hacker Holidays** room built around Microsoft Azure security.
+
+Instead of exploiting a vulnerable web application, this room demonstrates how **misconfigured cloud services** can expose sensitive identities and secrets through a chain of seemingly minor security weaknesses.
+
+This repository documents the **complete investigation process** performed during the lab while intentionally hiding all flags, secrets, access tokens, SAS signatures, and sensitive Azure identifiers.
+
+> **Portfolio Edition**
 >
-> **Flags, live credentials, SAS signatures, access tokens, and recovered secret values are intentionally redacted** to keep this repository suitable for a portfolio and reduce copy-paste plagiarism.
+> This walkthrough is rewritten from scratch for GitHub portfolio purposes and focuses on methodology, cloud architecture, detection opportunities, and defensive lessons rather than publishing challenge answers.
 
-![CryptoCabana](Screenshots/01_cryptocabana_landing.png)
+---
 
-## Overview
+# 🎯 Objectives
 
-CryptoCabana is a medium-difficulty Azure cloud-security challenge built around a chained trust relationship between an Azure Static Website, Blob Storage, a leaked service identity, and Azure Key Vault.
+* Investigate an Azure-hosted cryptocurrency backup application.
+* Perform client-side cloud reconnaissance.
+* Analyze Azure Storage SAS permissions.
+* Enumerate Azure Blob Storage containers.
+* Discover hidden cloud resources.
+* Recover exposed Azure Service Principal credentials.
+* Authenticate into Azure using Azure CLI.
+* Enumerate Azure Key Vault resources.
+* Analyze RBAC permission boundaries.
+* Recover historical secret versions through Azure REST APIs.
+* Understand the complete Azure attack chain.
 
-The investigation follows:
+---
 
-`Static Website -> client-side configuration -> SAS authorization -> Blob enumeration -> service-principal exposure -> Azure authentication -> Key Vault metadata -> secret-version history -> shard reconstruction`
+# 🧩 Room Information
 
-## Skills Demonstrated
+| Property           | Details                                                          |
+| ------------------ | ---------------------------------------------------------------- |
+| **Platform**       | TryHackMe                                                        |
+| **Room**           | CryptoCabana                                                     |
+| **Category**       | Cloud Security                                                   |
+| **Difficulty**     | Medium                                                           |
+| **Cloud Provider** | Microsoft Azure                                                  |
+| **Focus Areas**    | Azure Storage, Blob Storage, Key Vault, Service Principals, RBAC |
 
-- Azure Static Website reconnaissance
-- Client-side configuration review
-- Azure Storage SAS analysis
-- Blob container/object enumeration
-- Azure CLI service-principal authentication
-- Azure Key Vault RBAC analysis
-- Azure Key Vault REST API usage
-- Secret-version enumeration
-- Cloud misconfiguration analysis
-- Secure portfolio reporting and redaction
+---
 
-## Repository Layout
+# 🚀 Skills Demonstrated
+
+<table>
+<tr>
+<td width="50%">
+
+### Azure Cloud Security
+
+* Azure Storage Enumeration
+* Azure Blob Storage
+* SAS Token Analysis
+* Azure Static Websites
+* Azure Service Principals
+* Azure CLI Authentication
+* Azure Key Vault
+* RBAC Investigation
+* Azure REST API
+
+</td>
+<td width="50%">
+
+### Offensive Cloud Security
+
+* Client-side Reconnaissance
+* Cloud Resource Enumeration
+* Identity Enumeration
+* Secret Discovery
+* Metadata Analysis
+* Secret Version Enumeration
+* Trust Relationship Analysis
+* Cloud Misconfiguration Assessment
+
+</td>
+</tr>
+</table>
+
+---
+
+# 🛠️ Tools & Technologies
+
+| Tool             | Purpose                                 |
+| ---------------- | --------------------------------------- |
+| Azure CLI        | Cloud authentication and enumeration    |
+| Curl             | Azure REST API requests                 |
+| Browser DevTools | JavaScript inspection                   |
+| PowerShell       | Blob enumeration                        |
+| Azure REST API   | Secret metadata and version enumeration |
+| Microsoft Azure  | Target cloud infrastructure             |
+
+---
+
+# 📂 Repository Structure
 
 ```text
-CryptoCabana-TryHackMe-Walkthrough/
-├── Documentation/
+CryptoCabana-TryHackMe-Walkthrough
+│
+├── README.md
+├── LICENSE
+├── SECURITY.md
+│
+├── Documentation
 │   └── Documentation.md
-├── Resources/
+│
+├── Resources
 │   └── notes.md
-├── Screenshots/
+│
+├── Screenshots
 │   ├── 01_cryptocabana_landing.png
 │   ├── 02_frontend_appjs.png
 │   ├── 03_sas_permissions_403.png
@@ -45,63 +138,330 @@ CryptoCabana-TryHackMe-Walkthrough/
 │   ├── 07_keyvault_rbac.png
 │   ├── 08_rest_secret_versions.png
 │   └── 09_historical_version.png
-├── docs/
-│   └── index.md
-├── README.md
-└── _config.yml
+│
+└── docs
+    ├── index.md
+    └── assets
 ```
-
-## Investigation Summary
-
-### 01 - Reconnaissance
-The target is an Azure Static Website. The interface exposes little useful data, making client-side inspection the first high-value action.
-
-### 02 - Frontend Review
-The JavaScript bundle contains storage configuration and a SAS token. Real challenge values are redacted in this repository.
-
-### 03 - SAS Analysis
-The observed signed-permissions field is `sp=rl`, representing read/list capability. A write attempt returns HTTP 403, confirming the boundary.
-
-### 04 - Storage Enumeration
-Direct Blob interaction reveals an additional `vault` container that is not referenced by the kiosk UI.
-
-### 05 - Credential Exposure
-A service-account configuration file in the hidden container contains Azure service-principal material and Key Vault details.
-
-### 06 - Azure Authentication
-The recovered lab identity authenticates through Azure CLI. All identifiers are sanitized here.
-
-### 07 - Key Vault Boundary
-Secret enumeration succeeds, while direct current-value retrieval is blocked by RBAC.
-
-### 08 - Version History
-The Key Vault REST API reveals secret-version metadata. One shard has multiple revisions, matching the room hint about rotation.
-
-### 09 - Historical Retrieval
-The older revision can be requested directly in the lab, returning the missing shard material. The final flag is omitted.
-
-## Defensive Takeaways
-
-The challenge demonstrates why cloud security must be evaluated as an end-to-end trust chain. Browser-visible authorization, storage exposure, credential placement, identity privileges, and secret lifecycle controls interact.
-
-## Flag Policy
-
-This repository deliberately does **not** publish the live TryHackMe flag, real SAS signatures, client secrets, access tokens, or exact recovered shard contents.
-
-## Documentation
-
-- [Full technical documentation](Documentation/Documentation.md)
-- [Quick notes](Resources/notes.md)
-- [GitHub Pages documentation](docs/index.md)
-
-## References
-
-- [TryHackMe - CryptoCabana](https://tryhackme.com/room/hh-cryptocabana-f81cac95)
-- [Microsoft Learn - Create a Service SAS](https://learn.microsoft.com/en-us/rest/api/storageservices/create-service-sas)
-- [Microsoft Learn - Azure Key Vault REST API](https://learn.microsoft.com/en-us/rest/api/keyvault/)
-- [Microsoft Learn - Get Secret](https://learn.microsoft.com/en-us/rest/api/keyvault/secrets/get-secret/get-secret?view=rest-keyvault-secrets-2025-07-01)
-- [Microsoft Learn - Get Secret Versions](https://learn.microsoft.com/en-us/rest/api/keyvault/secrets/get-secret-versions/get-secret-versions?view=rest-keyvault-secrets-2025-07-01)
 
 ---
 
-**Portfolio note:** Screenshots are sanitized local lab-style visuals. Sensitive values are never published.
+# 🌐 Challenge Scenario
+
+A fictional Azure-hosted hotel offers guests a service to **securely back up cryptocurrency recovery phrases**.
+
+The web application appears harmless.
+
+Behind the scenes, however, multiple Azure resources trust one another in unsafe ways.
+
+The challenge demonstrates how an attacker can move from a **public static website** to sensitive cloud secrets by abusing exposed permissions and cloud identities.
+
+---
+
+# ☁️ Azure Attack Chain
+
+```text
+                   Internet User
+                         │
+                         ▼
+            Azure Static Website ($web)
+                         │
+                  Client-side JavaScript
+                         │
+                Hardcoded Storage SAS
+                         │
+                         ▼
+          Azure Blob Storage Account
+        ┌──────────────┬───────────────┐
+        │              │               │
+      $web         backups         vault
+                                      │
+                                      ▼
+                     backup-service-account.json
+                                      │
+                                      ▼
+                     Azure Service Principal
+                                      │
+                                      ▼
+                         Azure Key Vault
+               ├── key-shard-1
+               ├── key-shard-2
+               ├── key-shard-3
+               └── master-key
+                                      │
+                                      ▼
+                      Historical Secret Version
+                                      │
+                                      ▼
+                  Room Flag Reconstruction (Redacted)
+```
+
+---
+
+# 🔍 Walkthrough Overview
+
+## Phase 1 — Azure Static Website Reconnaissance
+
+The investigation begins with a publicly accessible Azure Static Website.
+
+Minimal functionality suggests that the interesting logic exists client-side.
+
+📸 **Screenshot**
+
+`Screenshots/01_cryptocabana_landing.png`
+
+---
+
+## Phase 2 — Client-Side Cloud Configuration Discovery
+
+Inspecting the JavaScript bundle reveals Azure Storage configuration embedded directly inside the frontend.
+
+Key observations include:
+
+* Storage Account
+* Blob Container
+* Storage Endpoint
+* SAS Token
+
+📸 **Screenshot**
+
+`Screenshots/02_frontend_appjs.png`
+
+---
+
+## Phase 3 — SAS Permission Analysis
+
+Rather than uploading data through the UI, the SAS token is analyzed independently.
+
+The permission scope allows resource enumeration while preventing uploads.
+
+This exposes an important cloud authorization boundary.
+
+📸 **Screenshot**
+
+`Screenshots/03_sas_permissions_403.png`
+
+---
+
+## Phase 4 — Azure Blob Storage Enumeration
+
+Using the SAS token directly against Azure Blob Storage reveals containers that are not referenced anywhere in the application.
+
+This demonstrates why **security through obscurity fails**.
+
+📸 **Screenshot**
+
+`Screenshots/04_blob_container_enum.png`
+
+---
+
+## Phase 5 — Hidden Administrative Container Discovery
+
+A hidden container stores backup automation artifacts.
+
+One configuration file exposes Azure Service Principal authentication details.
+
+📸 **Screenshot**
+
+`Screenshots/05_service_principal_json.png`
+
+---
+
+## Phase 6 — Azure Identity Authentication
+
+The recovered identity successfully authenticates through Azure CLI.
+
+The walkthrough analyzes what permissions become available after authentication.
+
+📸 **Screenshot**
+
+`Screenshots/06_azure_login.png`
+
+---
+
+## Phase 7 — Azure Key Vault Enumeration
+
+The authenticated identity can enumerate Key Vault secrets but cannot retrieve current values.
+
+This demonstrates an RBAC permission boundary.
+
+📸 **Screenshot**
+
+`Screenshots/07_keyvault_rbac.png`
+
+---
+
+## Phase 8 — Secret Version Enumeration
+
+The room hint points toward secret rotation history.
+
+Azure REST APIs expose metadata that identifies secrets with multiple historical versions.
+
+📸 **Screenshot**
+
+`Screenshots/08_rest_secret_versions.png`
+
+---
+
+## Phase 9 — Historical Secret Recovery
+
+A previous secret version remains accessible.
+
+The walkthrough explains the methodology without exposing any sensitive shard or room flag.
+
+📸 **Screenshot**
+
+`Screenshots/09_historical_version.png`
+
+---
+
+# 🔐 Security Findings
+
+| Finding                               | Impact                                                   |
+| ------------------------------------- | -------------------------------------------------------- |
+| Client-side SAS Token Exposure        | Storage authorization leaked to every visitor.           |
+| Overly Broad SAS Scope                | Read/List permissions allow unintended enumeration.      |
+| Hidden Blob Container                 | Sensitive storage reachable through the same SAS.        |
+| Service Principal Credential Exposure | Azure workload identity compromised.                     |
+| Key Vault Metadata Enumeration        | Secret discovery without current-value access.           |
+| Historical Secret Version Exposure    | Older secret material remains accessible after rotation. |
+
+---
+
+# 🧠 Root Cause Analysis
+
+The compromise succeeds because several Azure security weaknesses combine together:
+
+### Storage Trust
+
+Client-side code exposes reusable cloud authorization.
+
+### Resource Segmentation Failure
+
+Hidden containers remain reachable with existing permissions.
+
+### Identity Exposure
+
+Blob Storage contains authentication material for an Azure workload identity.
+
+### Authorization Boundary
+
+RBAC blocks current secrets but still allows useful metadata enumeration.
+
+### Secret Lifecycle Weakness
+
+Historical Key Vault versions remain accessible after rotation.
+
+---
+
+# 🛡️ MITRE ATT&CK Mapping
+
+| Technique | Description                    |
+| --------- | ------------------------------ |
+| **T1552** | Unsecured Credentials          |
+| **T1078** | Valid Accounts                 |
+| **T1087** | Account Discovery              |
+| **T1526** | Cloud Service Discovery        |
+| **T1528** | Steal Application Access Token |
+| **T1550** | Use of Stolen Credentials      |
+
+---
+
+# 🛡️ Defensive Recommendations
+
+* Avoid embedding SAS tokens inside frontend applications.
+* Use Microsoft Entra ID instead of reusable client-side credentials.
+* Generate short-lived, least-privilege SAS tokens.
+* Isolate administrative storage containers from public storage accounts.
+* Store Service Principal secrets inside Azure Key Vault only.
+* Replace Service Principals with Managed Identities where possible.
+* Audit Azure RBAC assignments regularly.
+* Review Key Vault secret version access policies.
+* Remove obsolete secret versions after credential rotation.
+* Monitor Azure Activity Logs for storage and identity enumeration.
+
+---
+
+# 📚 What I Learned
+
+This room demonstrates a realistic **cloud attack path** where an attacker chains together:
+
+* Frontend reconnaissance
+* Cloud storage enumeration
+* Credential exposure
+* Identity abuse
+* Secret metadata discovery
+* Historical secret recovery
+
+It reinforces an important Azure security principle:
+
+> **Cloud security depends on protecting trust relationships, not just individual resources.**
+
+---
+
+# 📈 Key Takeaways
+
+<table>
+<tr>
+<td>
+
+### Offensive Security
+
+* Azure Storage Enumeration
+* SAS Token Abuse
+* Cloud Identity Discovery
+* Key Vault Enumeration
+* REST API Analysis
+* Secret Version Investigation
+
+</td>
+<td>
+
+### Defensive Security
+
+* Least Privilege
+* Secure SAS Design
+* Identity Protection
+* Key Vault Hardening
+* RBAC Auditing
+* Secret Lifecycle Management
+
+</td>
+</tr>
+</table>
+
+---
+
+# ⚠️ Ethical Notice
+
+This repository contains documentation for an **authorized TryHackMe lab** completed for cybersecurity learning and portfolio development.
+
+### Sensitive Information Removed
+* ❌ Room Flag
+* ❌ SAS Token Signature
+* ❌ Client Secret
+* ❌ Tenant ID
+* ❌ Access Tokens
+* ❌ Secret Values
+* ❌ Secret Shards
+* ❌ Subscription Identifiers
+
+The repository demonstrates **methodology and cloud security analysis only**.
+
+---
+
+# 🤝 Connect With Me
+
+**Cybersecurity Portfolio • Cloud Security • Azure Security • TryHackMe Walkthroughs**
+
+If this repository helped you understand Azure cloud attack paths, consider ⭐ starring the project.
+
+---
+
+<div align="center">
+
+**Built for a Professional Cybersecurity Portfolio**
+
+*Azure Cloud Security • TryHackMe • Ethical Hacking • Microsoft Azure*
+
+</div>
