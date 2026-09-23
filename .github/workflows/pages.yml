@@ -32,13 +32,12 @@ jobs:
           destination: ./_site
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v4
 
   deploy:
     needs: build
     runs-on: ubuntu-latest
 
-    # ⭐ THIS FIXES YOUR ERROR
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
