@@ -1,14 +1,10 @@
-title: "TryHackMe CTF"
-description: "Professional CTF documentation."
-
-theme: jekyll-theme-primer
-
+title: "CryptoCabana - TryHackMe Cloud Security Documentation"
+description: "Portfolio documentation for the TryHackMe CryptoCabana Azure cloud-security challenge."
+theme: jekyll-theme-hacker
 plugins:
   - jekyll-relative-links
-
 relative_links:
   enabled: true
   collections: true
-
 include:
   - docs
