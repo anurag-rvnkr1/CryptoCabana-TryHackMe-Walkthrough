@@ -912,19 +912,3 @@ From a defensive perspective, the assessment highlights the importance of:
 - removal or invalidation of obsolete secret versions
 
 The assessment ultimately demonstrates how individual cloud-security weaknesses can combine into a much larger compromise path when trust boundaries are not consistently enforced.
-
----
-
-<div class="ctf-footer">
-
-<strong>CYBERSECURITY CTF PORTFOLIO</strong>
-
-<br>
-
-Research • Practice • Detection • Defense
-
-<br><br>
-
-© Anurag R.
-
-</div>
