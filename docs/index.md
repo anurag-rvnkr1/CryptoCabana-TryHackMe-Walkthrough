@@ -1,9 +1,3 @@
----
-layout: default
-title: "CryptoCabana — Azure Cloud Security Walkthrough"
-description: "Professional TryHackMe CryptoCabana documentation covering Azure Storage enumeration, SAS exposure, Service Principal authentication, Key Vault RBAC analysis, and historical secret version recovery."
----
-
 <div class="ctf-hero">
 
 <h1>CryptoCabana</h1>
